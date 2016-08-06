@@ -1,0 +1,8 @@
+{
+  "main": "./index.js",
+  "dependencies": {
+    "stream-to-promise": "latest",
+    "jsdoc-parse": "latest",
+    "requizzle": "latest"
+  }
+}
