@@ -1,4 +1,4 @@
-import Route from '../../format/Route';
+import Route from '../../lib/Route';
 import { parseTypeString } from './type/parseType';
 
 export default function (doc) {

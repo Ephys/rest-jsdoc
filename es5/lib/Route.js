@@ -45,6 +45,11 @@ var Route = function () {
         parameters[Route.PARAMETER_KINDS[key]] = map;
         this[key.toLocaleLowerCase() + 'Parameters'] = map;
       }
+
+      /**
+       *
+       * @type {Array.<{ httpCode: !number, type: !BaseType }>}
+       */
     } catch (err) {
       _didIteratorError = true;
       _iteratorError = err;
@@ -101,8 +106,9 @@ var Route = function () {
 exports.default = Route;
 
 
-Route.prototype.consumes = 'application/octet-stream';
-Route.prototype.produces = 'application/octet-stream';
+Route.prototype.consumes = null;
+Route.prototype.produces = null;
+Route.prototype.description = '';
 
 Route.PARAMETER_KINDS = {
   PATH: 0,

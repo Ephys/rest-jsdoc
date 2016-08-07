@@ -17,7 +17,7 @@ function _interopRequireDefault(obj) { return obj && obj.__esModule ? obj : { de
 var jsdocRequire = (0, _requizzle2.default)({
   requirePaths: {
     // TODO find this automatically
-    before: [_path2.default.normalize(__dirname + '/../../../../node_modules/jsdoc-75lb/lib')]
+    before: [_path2.default.normalize(__dirname + '/../../../node_modules/jsdoc-75lb/lib')]
   },
   infect: true
 });

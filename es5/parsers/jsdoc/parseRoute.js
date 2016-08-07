@@ -84,7 +84,7 @@ exports.default = function (doc) {
   return route;
 };
 
-var _Route = require('../../format/Route');
+var _Route = require('../../lib/Route');
 
 var _Route2 = _interopRequireDefault(_Route);
 

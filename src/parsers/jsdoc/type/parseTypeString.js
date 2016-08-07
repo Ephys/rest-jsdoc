@@ -1,11 +1,11 @@
-import PrimitiveType from '../../../format/types/PrimitiveType';
-import CustomType from '../../../format/types/CustomType';
-import ObjectType from '../../../format/types/ObjectType';
-import UnionType from '../../../format/types/UnionType';
-import AnyType from '../../../format/types/AnyType';
+import PrimitiveType from '../../../lib/types/PrimitiveType';
+import CustomType from '../../../lib/types/CustomType';
+import ObjectType from '../../../lib/types/ObjectType';
+import UnionType from '../../../lib/types/UnionType';
+import AnyType from '../../../lib/types/AnyType';
+import GenericType from '../../../lib/types/GenericType';
 import { buildInstanceForTypedef } from './parseTypedef';
 import { extractType } from './parseType';
-import GenericType from '../../../format/types/GenericType';
 
 /**
  * Unifies a @param-like type declaration.

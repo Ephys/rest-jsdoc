@@ -6,7 +6,7 @@ Object.defineProperty(exports, "__esModule", {
 exports.parseTypeString = parseTypeString;
 exports.extractType = extractType;
 
-var _BaseType = require('../../../format/types/abstract/BaseType');
+var _BaseType = require('../../../lib/types/abstract/BaseType');
 
 var _BaseType2 = _interopRequireDefault(_BaseType);
 

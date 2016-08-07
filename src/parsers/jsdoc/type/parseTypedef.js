@@ -1,7 +1,6 @@
-import PrimitiveType from '../../../format/types/PrimitiveType';
-import ObjectType from '../../../format/types/ObjectType';
-import UnionType from '../../../format/types/UnionType';
-import AnyType from '../../../format/types/AnyType';
+import ObjectType from '../../../lib/types/ObjectType';
+import UnionType from '../../../lib/types/UnionType';
+import AnyType from '../../../lib/types/AnyType';
 import { extractType } from './parseType';
 import parseTypeString from './parseTypeString';
 import catharsis from 'catharsis';

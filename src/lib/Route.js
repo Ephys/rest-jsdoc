@@ -26,6 +26,10 @@ export default class Route {
       this[key.toLocaleLowerCase() + 'Parameters'] = map;
     }
 
+    /**
+     *
+     * @type {Array.<{ httpCode: !number, type: !BaseType }>}
+     */
     this.responses = [];
 
     privateFields.set(this, {
@@ -56,8 +60,9 @@ export default class Route {
   }
 }
 
-Route.prototype.consumes = 'application/octet-stream';
-Route.prototype.produces = 'application/octet-stream';
+Route.prototype.consumes = null;
+Route.prototype.produces = null;
+Route.prototype.description = '';
 
 Route.PARAMETER_KINDS = {
   PATH: 0,

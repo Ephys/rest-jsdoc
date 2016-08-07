@@ -1,4 +1,4 @@
-import BaseType from '../../../format/types/abstract/BaseType';
+import BaseType from '../../../lib/types/abstract/BaseType';
 import jsdocRequire from '../jsdoc-require';
 import buildInstanceForType from './parseTypeString';
 const typeParser = jsdocRequire('jsdoc-75lb/lib/jsdoc/tag/type.js');

@@ -1,8 +1,23 @@
 import extractRouteDoc from './index';
+import openApi from './formatters/openapi';
 
 extractRouteDoc({
-  files: [__dirname + '/test.js']
-});
+  files: [`${__dirname}/test.js`],
+  formatter: openApi({
+    baseDefinition: {
+      info: {
+        title: 'JSdoc->OpenAPI Test',
+        description: 'A test formatting JSDoc api doc into an OpenAPI document.',
+        version: '0.0.1'
+      },
+      host: 'test.github.io',
+      basePath: '/v1',
+      schemes: ['http'],
+    }
+  })
+})
+  .then(result => console.log(JSON.stringify(result, null, 2)))
+  .catch(e => console.error(e));
 
 export default {
 
@@ -18,5 +33,6 @@ export default {
    * @produces application/json
    * @authenticated
    */
-  createUser() {},
+  createUser() {
+  },
 };

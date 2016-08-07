@@ -5,33 +5,33 @@ Object.defineProperty(exports, "__esModule", {
 });
 exports.default = buildInstanceForArgType;
 
-var _PrimitiveType = require('../../../format/types/PrimitiveType');
+var _PrimitiveType = require('../../../lib/types/PrimitiveType');
 
 var _PrimitiveType2 = _interopRequireDefault(_PrimitiveType);
 
-var _CustomType = require('../../../format/types/CustomType');
+var _CustomType = require('../../../lib/types/CustomType');
 
 var _CustomType2 = _interopRequireDefault(_CustomType);
 
-var _ObjectType = require('../../../format/types/ObjectType');
+var _ObjectType = require('../../../lib/types/ObjectType');
 
 var _ObjectType2 = _interopRequireDefault(_ObjectType);
 
-var _UnionType = require('../../../format/types/UnionType');
+var _UnionType = require('../../../lib/types/UnionType');
 
 var _UnionType2 = _interopRequireDefault(_UnionType);
 
-var _AnyType = require('../../../format/types/AnyType');
+var _AnyType = require('../../../lib/types/AnyType');
 
 var _AnyType2 = _interopRequireDefault(_AnyType);
+
+var _GenericType = require('../../../lib/types/GenericType');
+
+var _GenericType2 = _interopRequireDefault(_GenericType);
 
 var _parseTypedef = require('./parseTypedef');
 
 var _parseType = require('./parseType');
-
-var _GenericType = require('../../../format/types/GenericType');
-
-var _GenericType2 = _interopRequireDefault(_GenericType);
 
 function _interopRequireDefault(obj) { return obj && obj.__esModule ? obj : { default: obj }; }
 
