@@ -1,9 +1,10 @@
 import PrimitiveType from '../../../format/types/PrimitiveType';
-import CustomType from '../../../format/types/CustomType';
 import ObjectType from '../../../format/types/ObjectType';
 import UnionType from '../../../format/types/UnionType';
 import AnyType from '../../../format/types/AnyType';
 import { extractType } from './parseType';
+import parseTypeString from './parseTypeString';
+import catharsis from 'catharsis';
 
 /**
  * Parses a @typedef declaration.
@@ -40,26 +41,23 @@ export function buildInstanceForTypedef(parsedType) {
 
   for (const name of parsedType.type.names) {
     if (name === '*') {
+      // Special case 1
       // if one of the possibilities is all possibilities, the others have no point in existing.
       // Stop here.
       return new AnyType();
     }
 
-    if (PrimitiveType.TYPES.includes(name)) {
-      instances.push(new PrimitiveType(name));
-      continue;
-    }
-
     if (name === 'Object') {
-      // we don't have details for literals in typedefs.
+      // special case 2
+      // for objects as their properties are stored in parsedType.properties
+      // and would be lost when sent through catharsis.
       instances.push(buildObjectType(parsedType));
       continue;
     }
 
-    // TODO Array
-    // TODO Array.<>
-
-    instances.push(new CustomType(name));
+    // Parse the string in the format handled by parseTypeString and send it back.
+    const newFormat = catharsis.parse(name, { jsdoc: true });
+    instances.push(parseTypeString(newFormat));
   }
 
   if (instances.length === 1) {

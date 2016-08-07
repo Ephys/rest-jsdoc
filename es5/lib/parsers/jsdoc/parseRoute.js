@@ -11,7 +11,7 @@ exports.default = function (doc) {
     return null;
   }
 
-  route.setDescription(doc.description);
+  route.description = doc.description;
   var _iteratorNormalCompletion = true;
   var _didIteratorError = false;
 
@@ -24,27 +24,48 @@ exports.default = function (doc) {
       var value = tagMeta.value;
 
 
+      if (_Route2.default.METHODS.includes(tag)) {
+        continue;
+      }
+
       if (tag.endsWith('param')) {
-        // TODO differenciate path and query and body and header
+        var kindString = tag.substr(0, tag.length - 'param'.length);
+        var kind = _Route2.default.PARAMETER_KINDS[kindString.toLocaleUpperCase()];
+
+        if (kind === void 0) {
+          throw new Error('Unknown parameter tag @' + tag);
+        }
+
         var type = (0, _parseType.parseTypeString)(value);
-        var kind = _Parameter2.default.KIND.PATH;
+        route.addParameter(kind, type);
+        continue;
+      }
 
-        var param = new _Parameter2.default({ kind: kind, type: type });
+      if (tag === 'consumes') {
+        route.consumes = value;
+        continue;
+      }
 
-        route.addParameter(param);
+      if (tag === 'produces') {
+        route.produces = value;
         continue;
       }
 
       if (tag === 'responds') {
-        // TODO parse value.
-        route.addResponse(value);
+        var _type = (0, _parseType.parseTypeString)(value);
+
+        var httpCode = Number(_type.name);
+        if (Number.isNaN(httpCode)) {
+          throw new Error('Invalid HTTP code in @responds ' + value + '. Format is @responds <type> <code> - <description>');
+        }
+
+        route.addResponse(httpCode, _type);
         continue;
       }
 
-      // console.log('UNKNOWN TAG', tag);
+      // TODO authenticate
+      console.log('UNKNOWN TAG', tag);
     }
-
-    // console.log(route);
   } catch (err) {
     _didIteratorError = true;
     _iteratorError = err;
@@ -59,15 +80,13 @@ exports.default = function (doc) {
       }
     }
   }
+
+  return route;
 };
 
 var _Route = require('../../format/Route');
 
 var _Route2 = _interopRequireDefault(_Route);
-
-var _Parameter = require('../../format/Parameter');
-
-var _Parameter2 = _interopRequireDefault(_Parameter);
 
 var _parseType = require('./type/parseType');
 

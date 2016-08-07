@@ -13,10 +13,6 @@ var _PrimitiveType = require('../../../format/types/PrimitiveType');
 
 var _PrimitiveType2 = _interopRequireDefault(_PrimitiveType);
 
-var _CustomType = require('../../../format/types/CustomType');
-
-var _CustomType2 = _interopRequireDefault(_CustomType);
-
 var _ObjectType = require('../../../format/types/ObjectType');
 
 var _ObjectType2 = _interopRequireDefault(_ObjectType);
@@ -30,6 +26,14 @@ var _AnyType = require('../../../format/types/AnyType');
 var _AnyType2 = _interopRequireDefault(_AnyType);
 
 var _parseType = require('./parseType');
+
+var _parseTypeString = require('./parseTypeString');
+
+var _parseTypeString2 = _interopRequireDefault(_parseTypeString);
+
+var _catharsis = require('catharsis');
+
+var _catharsis2 = _interopRequireDefault(_catharsis);
 
 function _interopRequireDefault(obj) { return obj && obj.__esModule ? obj : { default: obj }; }
 
@@ -76,26 +80,23 @@ function buildInstanceForTypedef(parsedType) {
       var name = _step.value;
 
       if (name === '*') {
+        // Special case 1
         // if one of the possibilities is all possibilities, the others have no point in existing.
         // Stop here.
         return new _AnyType2.default();
       }
 
-      if (_PrimitiveType2.default.TYPES.includes(name)) {
-        instances.push(new _PrimitiveType2.default(name));
-        continue;
-      }
-
       if (name === 'Object') {
-        // we don't have details for literals in typedefs.
+        // special case 2
+        // for objects as their properties are stored in parsedType.properties
+        // and would be lost when sent through catharsis.
         instances.push(buildObjectType(parsedType));
         continue;
       }
 
-      // TODO Array
-      // TODO Array.<>
-
-      instances.push(new _CustomType2.default(name));
+      // Parse the string in the format handled by parseTypeString and send it back.
+      var newFormat = _catharsis2.default.parse(name, { jsdoc: true });
+      instances.push((0, _parseTypeString2.default)(newFormat));
     }
   } catch (err) {
     _didIteratorError = true;

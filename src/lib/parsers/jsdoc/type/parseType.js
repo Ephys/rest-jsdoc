@@ -1,7 +1,7 @@
-import jsdocRequire from '../jsdoc-require';
 import BaseType from '../../../format/types/abstract/BaseType';
-const typeParser = jsdocRequire('jsdoc-75lb/lib/jsdoc/tag/type.js');
+import jsdocRequire from '../jsdoc-require';
 import buildInstanceForType from './parseTypeString';
+const typeParser = jsdocRequire('jsdoc-75lb/lib/jsdoc/tag/type.js');
 
 /**
  * Parses a type string ({type} [variable] - description).

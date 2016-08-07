@@ -12,7 +12,7 @@ export default function (file) {
 
   return streamToPromise(parse({ src: file }))
     .then(response => JSON.parse(response[0]))
-    .then(docs => docs.map(doc => parseJsDoc(doc)));
+    .then(docs => docs.map(doc => parseJsDoc(doc)).filter(doc => doc !== void 0));
 }
 
 function parseJsDoc(doc) {

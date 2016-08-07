@@ -1,5 +1,4 @@
 import Route from '../../format/Route';
-import Parameter from '../../format/Parameter';
 import { parseTypeString } from './type/parseType';
 
 export default function (doc) {
@@ -9,31 +8,54 @@ export default function (doc) {
     return null;
   }
 
-  route.setDescription(doc.description);
+  route.description = doc.description;
   for (const tagMeta of doc.customTags) {
     const { tag, value } = tagMeta;
 
+    if (Route.METHODS.includes(tag)) {
+      continue;
+    }
+
     if (tag.endsWith('param')) {
-      // TODO differenciate path and query and body and header
+      const kindString = tag.substr(0, tag.length - 'param'.length);
+      const kind = Route.PARAMETER_KINDS[kindString.toLocaleUpperCase()];
+
+      if (kind === void 0) {
+        throw new Error(`Unknown parameter tag @${tag}`);
+      }
+
       const type = parseTypeString(value);
-      const kind = Parameter.KIND.PATH;
+      route.addParameter(kind, type);
+      continue;
+    }
 
-      const param = new Parameter({ kind, type });
+    if (tag === 'consumes') {
+      route.consumes = value;
+      continue;
+    }
 
-      route.addParameter(param);
+    if (tag === 'produces') {
+      route.produces = value;
       continue;
     }
 
     if (tag === 'responds') {
-      // TODO parse value.
-      route.addResponse(value);
+      const type = parseTypeString(value);
+
+      const httpCode = Number(type.name);
+      if (Number.isNaN(httpCode)) {
+        throw new Error(`Invalid HTTP code in @responds ${value}. Format is @responds <type> <code> - <description>`);
+      }
+
+      route.addResponse(httpCode, type);
       continue;
     }
 
-    // console.log('UNKNOWN TAG', tag);
+    // TODO authenticate
+    console.log('UNKNOWN TAG', tag);
   }
 
-  // console.log(route);
+  return route;
 }
 
 /**

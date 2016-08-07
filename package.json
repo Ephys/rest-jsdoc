@@ -20,7 +20,8 @@
     "jsdoc-75lb": "^3.5.6",
     "jsdoc-parse": "^1.2.7",
     "stream-to-promise": "^2.2.0",
-    "requizzle": "latest"
+    "requizzle": "latest",
+    "lodash": "latest"
   },
   "devDependencies": {
     "babel": "^6.5.2",

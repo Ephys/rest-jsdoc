@@ -3,6 +3,7 @@
   "dependencies": {
     "stream-to-promise": "latest",
     "jsdoc-parse": "latest",
-    "requizzle": "latest"
+    "requizzle": "latest",
+    "catharsis": "latest"
   }
 }

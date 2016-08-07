@@ -2,6 +2,8 @@
  * @module restjsdoc/Route
  */
 
+const privateFields = new WeakMap();
+
 /**
  * @class Route
  * @classdesc Represents a JSDoc application configuration.
@@ -13,33 +15,55 @@ export default class Route {
     this.method = method;
     this.path = path;
 
-    this.pathParameters = new Map();
-    this.queryParameters = new Map();
+    /**
+     *
+     * @type {!Object.<number, Map>}
+     */
+    const parameters = {};
+    for (const key of Object.keys(Route.PARAMETER_KINDS)) {
+      const map = new Map();
+      parameters[Route.PARAMETER_KINDS[key]] = map;
+      this[key.toLocaleLowerCase() + 'Parameters'] = map;
+    }
 
     this.responses = [];
 
-    // BODY TODO
+    privateFields.set(this, {
+      parameters
+    });
   }
 
-  setDescription(description) {
-    this.description = description;
+  /**
+   * Adds a parameter to the route.
+   *
+   * @param {!number} kind - The type of parameter.
+   * @param {!BaseType} type - The type of the parameter.
+   * @returns {!Route} this.
+   */
+  addParameter(kind, type) {
+    const properties = privateFields.get(this);
+    const parameterMap = properties.parameters[kind];
+
+    if (parameterMap.has(type.name)) {
+      throw new Error(`Route ${this.method} ${this.path} has a duplicate parameter name ${type.name}.`);
+    }
+
+    parameterMap.set(type.name, type);
   }
 
-  setProduces(produces) {
-
-  }
-
-  setConsumes(consumes) {
-
-  }
-
-  addParameter(kind, name, description, type) {
-
-  }
-
-  addResponse(httpCode, description, type) {
-
+  addResponse(httpCode, type) {
+    this.responses.push({ httpCode, type });
   }
 }
+
+Route.prototype.consumes = 'application/octet-stream';
+Route.prototype.produces = 'application/octet-stream';
+
+Route.PARAMETER_KINDS = {
+  PATH: 0,
+  QUERY: 1,
+  HEADER: 2,
+  BODY: 3
+};
 
 Route.METHODS = ['get', 'put', 'post', 'delete', 'options', 'head', 'patch'];

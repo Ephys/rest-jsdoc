@@ -11,6 +11,8 @@ exports.default = function (file) {
   }).then(function (docs) {
     return docs.map(function (doc) {
       return parseJsDoc(doc);
+    }).filter(function (doc) {
+      return doc !== void 0;
     });
   });
 };

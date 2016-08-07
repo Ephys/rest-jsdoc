@@ -55,11 +55,6 @@ function buildGenericType(parsedType) {
     instance.addGeneric(extractType(generic));
   });
 
-  console.log(parsedType);
-  console.log('vvvvv');
-  console.log(instance);
-  console.log();
-
   return instance;
 }
 

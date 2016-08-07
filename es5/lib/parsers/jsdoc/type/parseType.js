@@ -6,13 +6,13 @@ Object.defineProperty(exports, "__esModule", {
 exports.parseTypeString = parseTypeString;
 exports.extractType = extractType;
 
-var _jsdocRequire = require('../jsdoc-require');
-
-var _jsdocRequire2 = _interopRequireDefault(_jsdocRequire);
-
 var _BaseType = require('../../../format/types/abstract/BaseType');
 
 var _BaseType2 = _interopRequireDefault(_BaseType);
+
+var _jsdocRequire = require('../jsdoc-require');
+
+var _jsdocRequire2 = _interopRequireDefault(_jsdocRequire);
 
 var _parseTypeString = require('./parseTypeString');
 
@@ -21,7 +21,6 @@ var _parseTypeString2 = _interopRequireDefault(_parseTypeString);
 function _interopRequireDefault(obj) { return obj && obj.__esModule ? obj : { default: obj }; }
 
 var typeParser = (0, _jsdocRequire2.default)('jsdoc-75lb/lib/jsdoc/tag/type.js');
-
 
 /**
  * Parses a type string ({type} [variable] - description).
