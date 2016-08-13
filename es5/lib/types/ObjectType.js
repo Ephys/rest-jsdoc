@@ -10,6 +10,10 @@ var _EcmaScriptType2 = require('./abstract/EcmaScriptType');
 
 var _EcmaScriptType3 = _interopRequireDefault(_EcmaScriptType2);
 
+var _BaseType = require('./abstract/BaseType');
+
+var _BaseType2 = _interopRequireDefault(_BaseType);
+
 function _interopRequireDefault(obj) { return obj && obj.__esModule ? obj : { default: obj }; }
 
 function _classCallCheck(instance, Constructor) { if (!(instance instanceof Constructor)) { throw new TypeError("Cannot call a class as a function"); } }
@@ -20,6 +24,7 @@ function _inherits(subClass, superClass) { if (typeof superClass !== "function" 
 
 /**
  * Type for Object native type.
+ *
  * @class ObjectType
  * @extends EcmaScriptType
  */
@@ -36,7 +41,14 @@ var ObjectType = function (_EcmaScriptType) {
   }
 
   /**
-   * @param {!BaseType} type
+   * Add a new member to the object.
+   * @param {!BaseType} type - The member to add.
+   * @returns {!ObjectType} this.
+   */
+
+
+  /**
+   * List of properties of the object, along with their types.
    */
 
 
@@ -48,6 +60,8 @@ var ObjectType = function (_EcmaScriptType) {
       }
 
       this.members.set(type.name, type);
+
+      return this;
     }
   }]);
 

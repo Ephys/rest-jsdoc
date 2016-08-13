@@ -2,10 +2,13 @@ import EcmaScriptType from './abstract/EcmaScriptType';
 
 /**
  * Type holding a primitive type.
+ *
  * @class PrimitiveType
  * @extends EcmaScriptType
  */
 export default class PrimitiveType extends EcmaScriptType {
+
+  static TYPES: string[];
 
   constructor(typeName) {
     super(typeName);

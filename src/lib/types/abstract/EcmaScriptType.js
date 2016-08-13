@@ -9,11 +9,11 @@ import BaseType from './BaseType';
  */
 export default class EcmaScriptType extends BaseType {
 
+  typeName: string;
+
   constructor(typeName) {
     super();
 
     this.typeName = typeName;
   }
 }
-
-

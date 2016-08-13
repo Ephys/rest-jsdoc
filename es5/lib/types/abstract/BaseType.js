@@ -6,12 +6,13 @@ Object.defineProperty(exports, "__esModule", {
 
 function _classCallCheck(instance, Constructor) { if (!(instance instanceof Constructor)) { throw new TypeError("Cannot call a class as a function"); } }
 
+/**
+ * Base class for types.
+ *
+ * @class BaseType
+ * @abstract
+ */
 var BaseType = function BaseType() {
-
-  /*
-   * allow props description, name, nullable, optional
-   */
-
   _classCallCheck(this, BaseType);
 };
 

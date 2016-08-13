@@ -17,7 +17,7 @@ exports.default = function () {
   var parser = _ref$parser === void 0 ? _jsdoc2.default : _ref$parser;
 
 
-  var types = new Map();
+  var typedefs = new Map();
   var routes = [];
 
   return Promise.all(files.map(function (router) {
@@ -42,9 +42,11 @@ exports.default = function () {
         if (format instanceof _BaseType2.default) {
           var name = format.name;
 
-          if (types.has(name)) {
+          if (typedefs.has(name)) {
             throw new Error('Duplicate type definition for ' + name + '.');
           }
+
+          typedefs.set(name, format);
         }
 
         throw new Error('Unknown class received ' + getName(format));
@@ -64,9 +66,13 @@ exports.default = function () {
       }
     }
 
-    return formatter({ routes: routes, types: types });
+    return formatter({ routes: routes, types: typedefs });
   });
 };
+
+var _lodash = require('lodash');
+
+var _lodash2 = _interopRequireDefault(_lodash);
 
 var _openapi = require('./formatters/openapi');
 
@@ -75,10 +81,6 @@ var _openapi2 = _interopRequireDefault(_openapi);
 var _jsdoc = require('./parsers/jsdoc');
 
 var _jsdoc2 = _interopRequireDefault(_jsdoc);
-
-var _lodash = require('lodash');
-
-var _lodash2 = _interopRequireDefault(_lodash);
 
 var _Route = require('./lib/Route');
 

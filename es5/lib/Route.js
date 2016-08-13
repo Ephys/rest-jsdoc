@@ -6,18 +6,26 @@ Object.defineProperty(exports, "__esModule", {
 
 var _createClass = function () { function defineProperties(target, props) { for (var i = 0; i < props.length; i++) { var descriptor = props[i]; descriptor.enumerable = descriptor.enumerable || false; descriptor.configurable = true; if ("value" in descriptor) descriptor.writable = true; Object.defineProperty(target, descriptor.key, descriptor); } } return function (Constructor, protoProps, staticProps) { if (protoProps) defineProperties(Constructor.prototype, protoProps); if (staticProps) defineProperties(Constructor, staticProps); return Constructor; }; }();
 
+var _BaseType = require('./types/abstract/BaseType');
+
+var _BaseType2 = _interopRequireDefault(_BaseType);
+
+function _interopRequireDefault(obj) { return obj && obj.__esModule ? obj : { default: obj }; }
+
 function _classCallCheck(instance, Constructor) { if (!(instance instanceof Constructor)) { throw new TypeError("Cannot call a class as a function"); } }
 
 /**
  * @module restjsdoc/Route
  */
-
 var privateFields = new WeakMap();
 
 /**
+ * Represents a JSDoc application configuration.
+ *
  * @class Route
- * @classdesc Represents a JSDoc application configuration.
- * @exports Route
+ * @property {!Map.<string, BaseType>} pathParameters - The list of path parameters of the route.
+ * @property {!Map.<string, BaseType>} queryParameters - The list of query parameters the route accepts.
+ * @property {!Map.<string, BaseType>} headerParameters - The list of headers the route accepts.
  */
 
 var Route = function () {
@@ -27,10 +35,6 @@ var Route = function () {
     this.method = method;
     this.path = path;
 
-    /**
-     *
-     * @type {!Object.<number, Map>}
-     */
     var parameters = {};
     var _iteratorNormalCompletion = true;
     var _didIteratorError = false;
@@ -39,17 +43,12 @@ var Route = function () {
 
     try {
       for (var _iterator = Object.keys(Route.PARAMETER_KINDS)[Symbol.iterator](), _step; !(_iteratorNormalCompletion = (_step = _iterator.next()).done); _iteratorNormalCompletion = true) {
-        var key = _step.value;
+        var _key = _step.value;
 
         var map = new Map();
-        parameters[Route.PARAMETER_KINDS[key]] = map;
-        this[key.toLocaleLowerCase() + 'Parameters'] = map;
+        parameters[Route.PARAMETER_KINDS[_key]] = map;
+        this[_key.toLocaleLowerCase() + 'Parameters'] = map;
       }
-
-      /**
-       *
-       * @type {Array.<{ httpCode: !number, type: !BaseType }>}
-       */
     } catch (err) {
       _didIteratorError = true;
       _iteratorError = err;
@@ -80,23 +79,38 @@ var Route = function () {
    * @returns {!Route} this.
    */
 
+  // TODO body
+
 
   _createClass(Route, [{
     key: 'addParameter',
     value: function addParameter(kind, type) {
-      var properties = privateFields.get(this);
-      var parameterMap = properties.parameters[kind];
 
-      if (parameterMap.has(type.name)) {
-        throw new Error('Route ' + this.method + ' ' + this.path + ' has a duplicate parameter name ' + type.name + '.');
+      var parameterName = type.name;
+
+      if (kind === Route.PARAMETER_KINDS.PATH) {
+        var paramRegex = new RegExp(':' + parameterName + '($|/)');
+        if (!paramRegex.test(this.path)) {
+          throw new Error('Route ' + this.method + ' ' + this.path + ' does not have a path parameter ' + parameterName + ' but \n                         does have a description for it.');
+        }
       }
 
-      parameterMap.set(type.name, type);
+      var properties = privateFields.get(this);
+      var parameterMap = properties.parameters[kind];
+      if (parameterMap.has(parameterName)) {
+        throw new Error('Route ' + this.method + ' ' + this.path + ' has a duplicate parameter name ' + parameterName + '.');
+      }
+
+      parameterMap.set(parameterName, type);
+
+      return this;
     }
   }, {
     key: 'addResponse',
     value: function addResponse(httpCode, type) {
+
       this.responses.push({ httpCode: httpCode, type: type });
+      return this;
     }
   }]);
 
@@ -108,7 +122,7 @@ exports.default = Route;
 
 Route.prototype.consumes = null;
 Route.prototype.produces = null;
-Route.prototype.description = '';
+Route.prototype.description = null;
 
 Route.PARAMETER_KINDS = {
   PATH: 0,

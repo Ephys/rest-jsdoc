@@ -18,6 +18,7 @@ function _inherits(subClass, superClass) { if (typeof superClass !== "function" 
 
 /**
  * Type holding a primitive type.
+ *
  * @class PrimitiveType
  * @extends EcmaScriptType
  */

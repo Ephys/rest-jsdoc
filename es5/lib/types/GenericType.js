@@ -28,19 +28,24 @@ var GenericType = function (_BaseType) {
   _inherits(GenericType, _BaseType);
 
   function GenericType(type) {
+    var _ret;
+
     _classCallCheck(this, GenericType);
 
     var _this = _possibleConstructorReturn(this, Object.getPrototypeOf(GenericType).call(this));
 
     _this.type = type;
     _this.generics = [];
-    return _this;
+
+    return _ret = _this, _possibleConstructorReturn(_this, _ret);
   }
 
   _createClass(GenericType, [{
     key: 'addGeneric',
     value: function addGeneric(generic) {
       this.generics.push(generic);
+
+      return this;
     }
   }]);
 

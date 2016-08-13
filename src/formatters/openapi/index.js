@@ -1,4 +1,6 @@
 import UnionType from '../../lib/types/UnionType';
+import BaseType from '../../lib/types/abstract/BaseType';
+import Route from '../../lib/Route';
 
 export default function openApi({ baseDefinition = {} } = {}) {
 
@@ -8,15 +10,9 @@ export default function openApi({ baseDefinition = {} } = {}) {
     // TODO REPLACE BY DEEP MERGE:
     return Object.assign(specification, baseDefinition);
   };
-};
+}
 
-/**
- *
- * @param {Array.<Route>} types
- * @param routes
- * @returns {{}}
- */
-function buildSpecification(types, routes) {
+function buildSpecification(types : Map<string, BaseType>, routes : Route[]) {
   const specification = {};
 
   specification.swagger = '2.0';
@@ -39,13 +35,7 @@ function buildSpecification(types, routes) {
   return specification;
 }
 
-/**
- *
- * @param types
- * @param {!Route} route
- * @returns {{}}
- */
-function buildRoute(types, route) {
+function buildRoute(types : Map<string, BaseType>, route : Route) {
 
   const swaggerRoute = {
     summary: route.description
@@ -78,8 +68,9 @@ function buildRoute(types, route) {
 /**
  * Builds a {@link http://swagger.io/specification/#schemaObject} schema object using a {@link BaseType} object.
  * @param {!BaseType} type - The type to transform into a schema.
+ * @returns {!Object}
  */
-function typeToSchema(type) {
+function typeToSchema(type : BaseType) : Object {
   return { todo: true }; // TODO
 }
 
@@ -110,7 +101,7 @@ function formatResponses(libResponses) {
         swaggerResponses[code] = newResponse;
       }
 
-      currentResponse.description = ' | ' + libResponse.type.description;
+      currentResponse.description = ` | ${libResponse.type.description}`;
       currentResponse.addElement(libResponse);
     }
   }

@@ -3,7 +3,10 @@
     "es2015"
   ],
   "plugins": [
+    "transform-flow-strip-types",
     "transform-object-rest-spread",
-    "transform-undefined-to-void"
+    "transform-undefined-to-void",
+    "transform-async-to-generator",
+    "transform-class-properties"
   ]
 }

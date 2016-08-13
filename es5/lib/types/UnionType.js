@@ -40,6 +40,11 @@ var UnionType = function (_BaseType) {
     return _this;
   }
 
+  /**
+   * List of elements accepted by the union type.
+   */
+
+
   _createClass(UnionType, [{
     key: 'addElement',
     value: function addElement(element) {
@@ -48,6 +53,8 @@ var UnionType = function (_BaseType) {
       }
 
       this.elements.push(element);
+
+      return this;
     }
   }]);
 

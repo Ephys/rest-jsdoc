@@ -1,11 +1,15 @@
+/**
+ * Base class for types.
+ *
+ * @class BaseType
+ * @abstract
+ */
 export default class BaseType {
 
-  constructor() {
-
-    /*
-     * allow props description, name, nullable, optional
-     */
-  }
+  name: string;
+  description: ?string;
+  nullable: boolean;
+  optional: boolean;
 }
 
 BaseType.prototype.name = '';

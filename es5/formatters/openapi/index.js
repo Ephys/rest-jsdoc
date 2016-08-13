@@ -9,6 +9,14 @@ var _UnionType = require('../../lib/types/UnionType');
 
 var _UnionType2 = _interopRequireDefault(_UnionType);
 
+var _BaseType = require('../../lib/types/abstract/BaseType');
+
+var _BaseType2 = _interopRequireDefault(_BaseType);
+
+var _Route = require('../../lib/Route');
+
+var _Route2 = _interopRequireDefault(_Route);
+
 function _interopRequireDefault(obj) { return obj && obj.__esModule ? obj : { default: obj }; }
 
 function openApi() {
@@ -27,14 +35,8 @@ function openApi() {
     // TODO REPLACE BY DEEP MERGE:
     return Object.assign(specification, baseDefinition);
   };
-};
+}
 
-/**
- *
- * @param {Array.<Route>} types
- * @param routes
- * @returns {{}}
- */
 function buildSpecification(types, routes) {
   var specification = {};
 
@@ -80,12 +82,6 @@ function buildSpecification(types, routes) {
   return specification;
 }
 
-/**
- *
- * @param types
- * @param {!Route} route
- * @returns {{}}
- */
 function buildRoute(types, route) {
 
   var swaggerRoute = {
@@ -141,6 +137,7 @@ function buildRoute(types, route) {
 /**
  * Builds a {@link http://swagger.io/specification/#schemaObject} schema object using a {@link BaseType} object.
  * @param {!BaseType} type - The type to transform into a schema.
+ * @returns {!Object}
  */
 function typeToSchema(type) {
   return { todo: true }; // TODO

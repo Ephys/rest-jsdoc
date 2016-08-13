@@ -1,10 +1,8 @@
-'use strict';
 
 const gulp = require('gulp');
 const babel = require('gulp-babel');
 const clean = require('gulp-clean');
 const nodemon = require('gulp-nodemon');
-const config = require('./../../../Downloads/json-config-generator-develop/package.json');
 const sequence = require('run-sequence');
 
 const paths = {
@@ -26,7 +24,7 @@ gulp.task('transpile-babel', function () {
     .pipe(gulp.dest(paths.es5));
 });
 
-gulp.task('watch', function () {
+gulp.task('watch', ['transpile'], function () {
   nodemon({
     script: 'es5/test.js',
     watch: [paths.es6],

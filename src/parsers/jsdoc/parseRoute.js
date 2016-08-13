@@ -1,9 +1,17 @@
+import type { ParameterKind } from '../../lib/Route';
 import Route from '../../lib/Route';
 import { parseTypeString } from './type/parseType';
+import BaseType from '../../lib/types/abstract/BaseType';
 
-export default function (doc) {
+/**
+ * Extracts a route from a parsed JSDoc comment.
+ *
+ * @param {!JsDocFunction} doc - The JSDoc comment.
+ * @returns {Route} The route or null if the comment does not contain a valid tag.
+ */
+export default function (doc: JsDocFunction): ?Route {
 
-  const route = getRoute(doc);
+  const route: ?Route = getRoute(doc);
   if (!route) {
     return null;
   }
@@ -17,15 +25,15 @@ export default function (doc) {
     }
 
     if (tag.endsWith('param')) {
-      const kindString = tag.substr(0, tag.length - 'param'.length);
-      const kind = Route.PARAMETER_KINDS[kindString.toLocaleUpperCase()];
+      const parameterKindName: string = tag.substr(0, tag.length - 'param'.length);
+      const parameterKind: ?ParameterKind = Route.PARAMETER_KINDS[parameterKindName.toLocaleUpperCase()];
 
-      if (kind === void 0) {
+      if (parameterKind === void 0) {
         throw new Error(`Unknown parameter tag @${tag}`);
       }
 
-      const type = parseTypeString(value);
-      route.addParameter(kind, type);
+      const type: BaseType = parseTypeString(value);
+      route.addParameter(parameterKind, type);
       continue;
     }
 
@@ -59,10 +67,12 @@ export default function (doc) {
 }
 
 /**
- * @param doc
- * @return {Route}
+ * Attempts creating a route using the JSDoc comment.
+ *
+ * @param {!Object} doc - The JSDoc comment.
+ * @returns {Route} The route or null if none could be created.
  */
-function getRoute(doc) {
+function getRoute(doc: Object): ?Route {
   if (!doc.customTags) {
     return null;
   }

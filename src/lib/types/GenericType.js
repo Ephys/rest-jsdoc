@@ -8,14 +8,21 @@ import BaseType from './abstract/BaseType';
  */
 export default class GenericType extends BaseType {
 
-  constructor(type) {
+  type: BaseType;
+  generics: BaseType[];
+
+  constructor(type: BaseType): GenericType {
     super();
 
     this.type = type;
     this.generics = [];
+
+    return this;
   }
 
-  addGeneric(generic) {
+  addGeneric(generic: BaseType): GenericType {
     this.generics.push(generic);
+
+    return this;
   }
 }

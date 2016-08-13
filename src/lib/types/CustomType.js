@@ -8,6 +8,8 @@ import EcmaScriptType from './abstract/EcmaScriptType';
  */
 export default class CustomType extends EcmaScriptType {
 
+  typedefReference: string;
+
   constructor(typedefName) {
     super('object');
 

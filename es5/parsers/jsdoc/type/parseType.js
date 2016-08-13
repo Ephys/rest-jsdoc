@@ -14,9 +14,11 @@ var _jsdocRequire = require('../jsdoc-require');
 
 var _jsdocRequire2 = _interopRequireDefault(_jsdocRequire);
 
-var _parseTypeString = require('./parseTypeString');
+var _buildParsedType = require('./buildParsedType');
 
-var _parseTypeString2 = _interopRequireDefault(_parseTypeString);
+var _buildParsedType2 = _interopRequireDefault(_buildParsedType);
+
+var _parseTypedef = require('./parseTypedef');
 
 function _interopRequireDefault(obj) { return obj && obj.__esModule ? obj : { default: obj }; }
 
@@ -37,18 +39,16 @@ function parseTypeString(typeString) {
 /**
  * Unifies JSDoc's representations of types.
  *
- * @param {!object} typeRaw - The JSDoc representation of a @typedef or type string.
+ * @param {!Object} typeRaw - The JSDoc representation of a @typedef or type string.
  * @returns {!BaseType} The unified type.
  */
 function extractType(typeRaw) {
+
+  var type = typeRaw.parsedType ? (0, _buildParsedType2.default)(typeRaw.parsedType) : (0, _parseTypedef.buildInstanceForTypedef)(typeRaw);
+
   var parsedType = typeRaw.parsedType ? typeRaw.parsedType : typeRaw;
 
-  /**
-   * @type {!BaseType}
-   */
-  var type = (0, _parseTypeString2.default)(parsedType);
-
-  type.description = extractFromMultiple('text', void 0, typeRaw, parsedType) || extractFromMultiple('description', null, typeRaw, parsedType);
+  type.description = typeRaw.text || typeRaw.description;
   type.name = typeRaw.name;
   type.nullable = extractFromMultiple('nullable', true, typeRaw, parsedType);
   type.optional = extractFromMultiple('optional', false, typeRaw, parsedType);

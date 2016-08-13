@@ -1,0 +1,79 @@
+{
+  "extends": "airbnb",
+  "parser": "babel-eslint",
+  "plugins": [
+    "import",
+    "flow-vars"
+  ],
+  "parser-options": {
+    "ecmaVersion": 6,
+    "sourceType": "module"
+  },
+  "rules": {
+    "strict": ["warn", "global"],
+    "comma-dangle": ["warn", "never"],
+    "no-underscore-dangle": ["warn", { "allowAfterThis": true }],
+    "max-len": ["warn", 120],
+    "no-use-before-define": ["off"],
+    "padded-blocks": ["off"],
+    "arrow-body-style": ["off"],
+    "no-confusing-arrow": ["off"],
+
+    "new-cap": ["error", { "capIsNew": false }],
+    "valid-jsdoc": ["warn", {
+      "prefer": {
+        "virtual": "abstract",
+        "augments": "extends",
+        "constructor": "class",
+        "const": "constant",
+        "default": "defaultValue",
+        "desc": "description",
+        "host": "external",
+        "fileoverview": "file",
+        "overview": "file",
+        "fires": "emits",
+        "func": "function",
+        "var": "member",
+        "arg": "param",
+        "argument": "param",
+        "prop": "property",
+        "return": "returns",
+        "exception": "throws",
+        "linkcode": "link",
+        "linkplain": "link"
+      },
+      "preferType": {
+        "String": "string",
+        "Number": "number",
+        "Boolean": "boolean",
+        "Symbol": "symbol",
+        "Undefined": "undefined",
+        "Null": "null",
+        "NULL": "null",
+        "function": "Function",
+        "object": "Object",
+        "array": "Array",
+        "regexp": "RegExp"
+      },
+      "requireReturnDescription": false,
+      "requireReturnType": false,
+      "requireReturn": false,
+      "requireParamDescription": true
+    }],
+    "require-jsdoc": ["off"],
+
+    "no-void": "off",
+
+    "no-duplicate-imports": ["off"],
+    "no-param-reassign": ["error", { "props": false }],
+    "import/no-namespace": 2,
+    "import/no-commonjs": 2,
+    "import/prefer-default-export": 0,
+    "import/no-extraneous-dependencies": ["off"],
+    "no-undefined": "error",
+    "no-unused-vars": ["warn"],
+    "no-continue": ["off"],
+    "flow-vars/define-flow-type": 1,
+    "flow-vars/use-flow-type": 1
+  }
+}

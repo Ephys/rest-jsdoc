@@ -9,6 +9,10 @@ var _typeof = typeof Symbol === "function" && typeof Symbol.iterator === "symbol
 exports.default = parseTypedef;
 exports.buildInstanceForTypedef = buildInstanceForTypedef;
 
+var _catharsis = require('catharsis');
+
+var _catharsis2 = _interopRequireDefault(_catharsis);
+
 var _ObjectType = require('../../../lib/types/ObjectType');
 
 var _ObjectType2 = _interopRequireDefault(_ObjectType);
@@ -23,21 +27,21 @@ var _AnyType2 = _interopRequireDefault(_AnyType);
 
 var _parseType = require('./parseType');
 
-var _parseTypeString = require('./parseTypeString');
+var _buildParsedType = require('./buildParsedType');
 
-var _parseTypeString2 = _interopRequireDefault(_parseTypeString);
+var _buildParsedType2 = _interopRequireDefault(_buildParsedType);
 
-var _catharsis = require('catharsis');
+var _BaseType = require('../../../lib/types/abstract/BaseType');
 
-var _catharsis2 = _interopRequireDefault(_catharsis);
+var _BaseType2 = _interopRequireDefault(_BaseType);
 
 function _interopRequireDefault(obj) { return obj && obj.__esModule ? obj : { default: obj }; }
 
 /**
  * Parses a @typedef declaration.
  *
- * @param doc - The declaration, parsed by JSDoc's parser.
- * @returns {BaseType} The declared type.
+ * @param {!JsDocTypedef} doc - The declaration, parsed by JSDoc's parser.
+ * @returns {BaseType} The declared type. Or null if it not a @typedef.
  */
 function parseTypedef(doc) {
   if (doc.kind !== 'typedef') {
@@ -50,12 +54,12 @@ function parseTypedef(doc) {
 /**
  * Unifies a @typedef type declaration.
  *
- * @param {!Object} parsedType - The declaration, parsed by JSDoc's parser.
+ * @param {!Object} typedef - The declaration, parsed by JSDoc's parser.
  * @returns {!BaseType} The type.
  */
-function buildInstanceForTypedef(parsedType) {
+function buildInstanceForTypedef(typedef) {
 
-  var type = parsedType.type;
+  var type = typedef.type;
   if (type == null) {
     return new _AnyType2.default();
   }
@@ -72,7 +76,7 @@ function buildInstanceForTypedef(parsedType) {
   var _iteratorError = void 0;
 
   try {
-    for (var _iterator = parsedType.type.names[Symbol.iterator](), _step; !(_iteratorNormalCompletion = (_step = _iterator.next()).done); _iteratorNormalCompletion = true) {
+    for (var _iterator = typedef.type.names[Symbol.iterator](), _step; !(_iteratorNormalCompletion = (_step = _iterator.next()).done); _iteratorNormalCompletion = true) {
       var name = _step.value;
 
       if (name === '*') {
@@ -86,13 +90,13 @@ function buildInstanceForTypedef(parsedType) {
         // special case 2
         // for objects as their properties are stored in parsedType.properties
         // and would be lost when sent through catharsis.
-        instances.push(buildObjectType(parsedType));
+        instances.push(buildObjectType(typedef));
         continue;
       }
 
       // Parse the string in the format handled by parseTypeString and send it back.
       var newFormat = _catharsis2.default.parse(name, { jsdoc: true });
-      instances.push((0, _parseTypeString2.default)(newFormat));
+      instances.push((0, _buildParsedType2.default)(newFormat));
     }
   } catch (err) {
     _didIteratorError = true;
@@ -125,7 +129,7 @@ function buildInstanceForTypedef(parsedType) {
  * Builds an ObjectType from parsed JSDoc @typedef-like type declarations.
  *
  * @param {!Object} parsedType - The declaration, parsed by JSDoc's parser.
- * @returns {!ObjectType} The object type.
+ * @returns {!BaseType} The object type.
  */
 function buildObjectType(parsedType) {
   var instance = new _ObjectType2.default();

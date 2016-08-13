@@ -29,15 +29,15 @@ exports.default = function (doc) {
       }
 
       if (tag.endsWith('param')) {
-        var kindString = tag.substr(0, tag.length - 'param'.length);
-        var kind = _Route2.default.PARAMETER_KINDS[kindString.toLocaleUpperCase()];
+        var parameterKindName = tag.substr(0, tag.length - 'param'.length);
+        var parameterKind = _Route2.default.PARAMETER_KINDS[parameterKindName.toLocaleUpperCase()];
 
-        if (kind === void 0) {
+        if (parameterKind === void 0) {
           throw new Error('Unknown parameter tag @' + tag);
         }
 
         var type = (0, _parseType.parseTypeString)(value);
-        route.addParameter(kind, type);
+        route.addParameter(parameterKind, type);
         continue;
       }
 
@@ -90,11 +90,17 @@ var _Route2 = _interopRequireDefault(_Route);
 
 var _parseType = require('./type/parseType');
 
+var _BaseType = require('../../lib/types/abstract/BaseType');
+
+var _BaseType2 = _interopRequireDefault(_BaseType);
+
 function _interopRequireDefault(obj) { return obj && obj.__esModule ? obj : { default: obj }; }
 
 /**
- * @param doc
- * @return {Route}
+ * Attempts creating a route using the JSDoc comment.
+ *
+ * @param {!Object} doc - The JSDoc comment.
+ * @returns {Route} The route or null if none could be created.
  */
 function getRoute(doc) {
   if (!doc.customTags) {
@@ -131,3 +137,10 @@ function getRoute(doc) {
 
   return null;
 }
+
+/**
+ * Extracts a route from a parsed JSDoc comment.
+ *
+ * @param {!JsDocFunction} doc - The JSDoc comment.
+ * @returns {Route} The route or null if the comment does not contain a valid tag.
+ */

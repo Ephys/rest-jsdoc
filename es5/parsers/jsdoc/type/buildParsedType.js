@@ -3,7 +3,7 @@
 Object.defineProperty(exports, "__esModule", {
   value: true
 });
-exports.default = buildInstanceForArgType;
+exports.default = buildParsedType;
 
 var _PrimitiveType = require('../../../lib/types/PrimitiveType');
 
@@ -29,42 +29,45 @@ var _GenericType = require('../../../lib/types/GenericType');
 
 var _GenericType2 = _interopRequireDefault(_GenericType);
 
-var _parseTypedef = require('./parseTypedef');
+var _BaseType = require('../../../lib/types/abstract/BaseType');
 
-var _parseType = require('./parseType');
+var _BaseType2 = _interopRequireDefault(_BaseType);
 
 function _interopRequireDefault(obj) { return obj && obj.__esModule ? obj : { default: obj }; }
 
+var JsDocParsedTypeKind = {
+  NameExpression: 'NameExpression',
+  RecordType: 'RecordType',
+  TypeApplication: 'TypeApplication',
+  TypeUnion: 'TypeUnion'
+};
+
 /**
- * Unifies a @param-like type declaration.
+ * Converts @type-like type declaration into a BaseType.
  *
  * @param {!Object} parsedType - The declaration, parsed by JSDoc's parser.
  * @returns {!BaseType} The type.
  */
-function buildInstanceForArgType(parsedType) {
+function buildParsedType(parsedType) {
 
   var type = parsedType.type;
 
-  // Must be @typedef.
+  // Is JsDocTypedefInstance.
   if (typeof type !== 'string') {
-    return (0, _parseTypedef.buildInstanceForTypedef)(parsedType);
+    throw new Error('#buildInstanceForParsedType: arg is not of type JsDocParsedType');
   }
 
   switch (type) {
-    case 'NameExpression':
-      if (_PrimitiveType2.default.TYPES.includes(parsedType.name)) {
-        return new _PrimitiveType2.default(parsedType.name);
-      }
+    case JsDocParsedTypeKind.NameExpression:
+      return buildNamedType(parsedType);
 
-      return new _CustomType2.default(parsedType.name);
-
-    case 'RecordType':
+    case JsDocParsedTypeKind.RecordType:
       return buildObjectType(parsedType);
 
-    case 'TypeApplication':
+    case JsDocParsedTypeKind.TypeApplication:
       return buildGenericType(parsedType);
 
-    case 'TypeUnion':
+    case JsDocParsedTypeKind.TypeUnion:
       return buildUnionType(parsedType);
 
     default:
@@ -72,21 +75,31 @@ function buildInstanceForArgType(parsedType) {
   }
 }
 
-function buildGenericType(parsedType) {
+function buildNamedType(namedExpression) {
+  var name = namedExpression.name;
+
+  if (_PrimitiveType2.default.TYPES.includes(name)) {
+    return new _PrimitiveType2.default(name);
+  }
+
+  return new _CustomType2.default(name);
+}
+
+function buildGenericType(applicationType) {
   //        v application(s)
   // Array.<string>
   // ^ expression
-  var expression = buildInstanceForArgType(parsedType.expression);
+  var expression = buildParsedType(applicationType.expression);
   var instance = new _GenericType2.default(expression);
 
-  parsedType.applications.forEach(function (generic) {
-    instance.addGeneric((0, _parseType.extractType)(generic));
+  applicationType.applications.forEach(function (generic) {
+    instance.addGeneric(buildParsedType(generic));
   });
 
   return instance;
 }
 
-function buildUnionType(parsedType) {
+function buildUnionType(union) {
   var instance = new _UnionType2.default();
 
   var _iteratorNormalCompletion = true;
@@ -95,10 +108,10 @@ function buildUnionType(parsedType) {
   var _iteratorError = void 0;
 
   try {
-    for (var _iterator = parsedType.elements[Symbol.iterator](), _step; !(_iteratorNormalCompletion = (_step = _iterator.next()).done); _iteratorNormalCompletion = true) {
+    for (var _iterator = union.elements[Symbol.iterator](), _step; !(_iteratorNormalCompletion = (_step = _iterator.next()).done); _iteratorNormalCompletion = true) {
       var element = _step.value;
 
-      var elInstance = (0, _parseType.extractType)(element);
+      var elInstance = buildParsedType(element);
 
       // there is no point in being an union if you allow all types.
       if (elInstance instanceof _AnyType2.default) {
@@ -125,13 +138,7 @@ function buildUnionType(parsedType) {
   return instance;
 }
 
-/**
- * Builds an ObjectType from parsed JSDoc @param-like type declarations.
- *
- * @param {!Object} parsedType - The declaration, parsed by JSDoc's parser.
- * @returns {!ObjectType} The object type.
- */
-function buildObjectType(parsedType) {
+function buildObjectType(record) {
   var instance = new _ObjectType2.default();
 
   var _iteratorNormalCompletion2 = true;
@@ -140,11 +147,11 @@ function buildObjectType(parsedType) {
   var _iteratorError2 = void 0;
 
   try {
-    for (var _iterator2 = parsedType.fields[Symbol.iterator](), _step2; !(_iteratorNormalCompletion2 = (_step2 = _iterator2.next()).done); _iteratorNormalCompletion2 = true) {
+    for (var _iterator2 = record.fields[Symbol.iterator](), _step2; !(_iteratorNormalCompletion2 = (_step2 = _iterator2.next()).done); _iteratorNormalCompletion2 = true) {
       var field = _step2.value;
 
       var name = field.key.name;
-      var member = buildInstanceForArgType(field.value);
+      var member = buildParsedType(field.value);
       member.name = name;
 
       instance.addMember(member);

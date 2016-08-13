@@ -1,17 +1,18 @@
+import catharsis from 'catharsis';
 import ObjectType from '../../../lib/types/ObjectType';
 import UnionType from '../../../lib/types/UnionType';
 import AnyType from '../../../lib/types/AnyType';
 import { extractType } from './parseType';
-import parseTypeString from './parseTypeString';
-import catharsis from 'catharsis';
+import buildParsedType from './buildParsedType';
+import BaseType from '../../../lib/types/abstract/BaseType';
 
 /**
  * Parses a @typedef declaration.
  *
- * @param doc - The declaration, parsed by JSDoc's parser.
- * @returns {BaseType} The declared type.
+ * @param {!JsDocTypedef} doc - The declaration, parsed by JSDoc's parser.
+ * @returns {BaseType} The declared type. Or null if it not a @typedef.
  */
-export default function parseTypedef(doc) {
+export default function parseTypedef(doc: JsDocTypedef): ?BaseType {
   if (doc.kind !== 'typedef') {
     return null;
   }
@@ -22,12 +23,12 @@ export default function parseTypedef(doc) {
 /**
  * Unifies a @typedef type declaration.
  *
- * @param {!Object} parsedType - The declaration, parsed by JSDoc's parser.
+ * @param {!Object} typedef - The declaration, parsed by JSDoc's parser.
  * @returns {!BaseType} The type.
  */
-export function buildInstanceForTypedef(parsedType) {
+export function buildInstanceForTypedef(typedef: JsDocTypedef): BaseType {
 
-  const type = parsedType.type;
+  const type = typedef.type;
   if (type == null) {
     return new AnyType();
   }
@@ -36,9 +37,9 @@ export function buildInstanceForTypedef(parsedType) {
     throw new Error(`Type is not an object (is ${JSON.stringify(type)}) in typedef, report this as bug.`);
   }
 
-  const instances = [];
+  const instances: BaseType[] = [];
 
-  for (const name of parsedType.type.names) {
+  for (const name of typedef.type.names) {
     if (name === '*') {
       // Special case 1
       // if one of the possibilities is all possibilities, the others have no point in existing.
@@ -50,13 +51,13 @@ export function buildInstanceForTypedef(parsedType) {
       // special case 2
       // for objects as their properties are stored in parsedType.properties
       // and would be lost when sent through catharsis.
-      instances.push(buildObjectType(parsedType));
+      instances.push(buildObjectType(typedef));
       continue;
     }
 
     // Parse the string in the format handled by parseTypeString and send it back.
     const newFormat = catharsis.parse(name, { jsdoc: true });
-    instances.push(parseTypeString(newFormat));
+    instances.push(buildParsedType(newFormat));
   }
 
   if (instances.length === 1) {
@@ -73,9 +74,9 @@ export function buildInstanceForTypedef(parsedType) {
  * Builds an ObjectType from parsed JSDoc @typedef-like type declarations.
  *
  * @param {!Object} parsedType - The declaration, parsed by JSDoc's parser.
- * @returns {!ObjectType} The object type.
+ * @returns {!BaseType} The object type.
  */
-function buildObjectType(parsedType) {
+function buildObjectType(parsedType: JsDocTypedef): BaseType {
   const instance = new ObjectType();
 
   if (!parsedType.properties) {

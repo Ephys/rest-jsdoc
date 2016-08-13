@@ -1,6 +1,8 @@
 import BaseType from '../../../lib/types/abstract/BaseType';
 import jsdocRequire from '../jsdoc-require';
-import buildInstanceForType from './parseTypeString';
+import buildInstanceForParsedType from './buildParsedType';
+import { buildInstanceForTypedef } from './parseTypedef';
+
 const typeParser = jsdocRequire('jsdoc-75lb/lib/jsdoc/tag/type.js');
 
 /**
@@ -9,7 +11,7 @@ const typeParser = jsdocRequire('jsdoc-75lb/lib/jsdoc/tag/type.js');
  * @param {!string} typeString - The type of the string.
  * @returns {!BaseType} The type in the string.
  */
-export function parseTypeString(typeString) {
+export function parseTypeString(typeString: string): BaseType {
   const typeRaw = typeParser.parse(typeString, true, true);
 
   return extractType(typeRaw);
@@ -18,19 +20,18 @@ export function parseTypeString(typeString) {
 /**
  * Unifies JSDoc's representations of types.
  *
- * @param {!object} typeRaw - The JSDoc representation of a @typedef or type string.
+ * @param {!Object} typeRaw - The JSDoc representation of a @typedef or type string.
  * @returns {!BaseType} The unified type.
  */
-export function extractType(typeRaw) {
+export function extractType(typeRaw: JsDocTypedef | JsDocTypeInstance): BaseType {
+
+  const type: BaseType = typeRaw.parsedType
+    ? buildInstanceForParsedType(typeRaw.parsedType)
+    : buildInstanceForTypedef(typeRaw);
+
   const parsedType = typeRaw.parsedType ? typeRaw.parsedType : typeRaw;
 
-  /**
-   * @type {!BaseType}
-   */
-  const type = buildInstanceForType(parsedType);
-
-  type.description = extractFromMultiple('text', void 0, typeRaw, parsedType)
-    || extractFromMultiple('description', null, typeRaw, parsedType);
+  type.description = typeRaw.text || typeRaw.description;
   type.name = typeRaw.name;
   type.nullable = extractFromMultiple('nullable', true, typeRaw, parsedType);
   type.optional = extractFromMultiple('optional', false, typeRaw, parsedType);
@@ -42,9 +43,9 @@ export function extractType(typeRaw) {
   return type;
 }
 
-function extractFromMultiple(propName, def, ...multiple) {
+function extractFromMultiple(propName: string, def: any, ...multiple: Object[]): any {
 
-  for (const item of multiple) {
+  for (const item: Object of multiple) {
     if (item[propName] !== void 0) {
       return item[propName];
     }
@@ -52,4 +53,3 @@ function extractFromMultiple(propName, def, ...multiple) {
 
   return def;
 }
-

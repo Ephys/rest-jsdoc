@@ -1,35 +1,54 @@
+import BaseType from './types/abstract/BaseType';
+
+export type Response = {
+  httpCode: number,
+  type: BaseType
+};
+
+export type ParameterKind = number;
+
 /**
  * @module restjsdoc/Route
  */
-
 const privateFields = new WeakMap();
 
 /**
+ * Represents a JSDoc application configuration.
+ *
  * @class Route
- * @classdesc Represents a JSDoc application configuration.
- * @exports Route
+ * @property {!Map.<string, BaseType>} pathParameters - The list of path parameters of the route.
+ * @property {!Map.<string, BaseType>} queryParameters - The list of query parameters the route accepts.
+ * @property {!Map.<string, BaseType>} headerParameters - The list of headers the route accepts.
  */
 export default class Route {
 
-  constructor(method, path) {
+  static PARAMETER_KINDS: { [key: string]: number };
+  static METHODS: string[];
+
+  method: string;
+  path: string;
+
+  consumes: ?string;
+  produces: ?string;
+  description: ?string;
+
+  pathParameters: Map<string, BaseType>;
+  queryParameters: Map<string, BaseType>;
+  headerParameters: Map<string, BaseType>;
+  // TODO body
+  responses: Response[];
+
+  constructor(method: string, path: string) {
     this.method = method;
     this.path = path;
 
-    /**
-     *
-     * @type {!Object.<number, Map>}
-     */
     const parameters = {};
     for (const key of Object.keys(Route.PARAMETER_KINDS)) {
       const map = new Map();
       parameters[Route.PARAMETER_KINDS[key]] = map;
-      this[key.toLocaleLowerCase() + 'Parameters'] = map;
+      this[`${key.toLocaleLowerCase()}Parameters`] = map;
     }
 
-    /**
-     *
-     * @type {Array.<{ httpCode: !number, type: !BaseType }>}
-     */
     this.responses = [];
 
     privateFields.set(this, {
@@ -44,25 +63,41 @@ export default class Route {
    * @param {!BaseType} type - The type of the parameter.
    * @returns {!Route} this.
    */
-  addParameter(kind, type) {
-    const properties = privateFields.get(this);
-    const parameterMap = properties.parameters[kind];
+  addParameter(kind: ParameterKind,
+               type: BaseType): Route {
 
-    if (parameterMap.has(type.name)) {
-      throw new Error(`Route ${this.method} ${this.path} has a duplicate parameter name ${type.name}.`);
+    const parameterName = type.name;
+
+    if (kind === Route.PARAMETER_KINDS.PATH) {
+      const paramRegex = new RegExp(`:${parameterName}($|\/)`);
+      if (!paramRegex.test(this.path)) {
+        throw new Error(`Route ${this.method} ${this.path} does not have a path parameter ${parameterName} but 
+                         does have a description for it.`);
+      }
     }
 
-    parameterMap.set(type.name, type);
+    const properties = privateFields.get(this);
+    const parameterMap = properties.parameters[kind];
+    if (parameterMap.has(parameterName)) {
+      throw new Error(`Route ${this.method} ${this.path} has a duplicate parameter name ${parameterName}.`);
+    }
+
+    parameterMap.set(parameterName, type);
+
+    return this;
   }
 
-  addResponse(httpCode, type) {
+  addResponse(httpCode: number,
+              type: BaseType): Route {
+
     this.responses.push({ httpCode, type });
+    return this;
   }
 }
 
 Route.prototype.consumes = null;
 Route.prototype.produces = null;
-Route.prototype.description = '';
+Route.prototype.description = null;
 
 Route.PARAMETER_KINDS = {
   PATH: 0,
