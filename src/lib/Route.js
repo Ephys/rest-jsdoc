@@ -25,8 +25,8 @@ export default class Route {
   static PARAMETER_KINDS: { [key: string]: number } = {
     PATH: 0,
     QUERY: 1,
-    HEADER: 2,
-    BODY: 3
+    HEADER: 2
+    // BODY: 3
   };
 
   static METHODS: string[] = ['get', 'put', 'post', 'delete', 'options', 'head', 'patch'];
@@ -34,15 +34,18 @@ export default class Route {
   method: string;
   path: string;
 
-  consumes: ?string;
-  produces: ?string;
-  description: ?string;
+  consumes: ?string = null;
+  produces: ?string = null;
+  description: ?string = null;
 
   pathParameters: Map<string, BaseType>;
   queryParameters: Map<string, BaseType>;
   headerParameters: Map<string, BaseType>;
+
+  body: ?BaseType = null;
+
   // TODO body
-  responses: Response[];
+  responses: Response[] = [];
 
   constructor(method: string, path: string) {
     this.method = method;
@@ -54,8 +57,6 @@ export default class Route {
       parameters[Route.PARAMETER_KINDS[key]] = map;
       this[`${key.toLocaleLowerCase()}Parameters`] = map;
     }
-
-    this.responses = [];
 
     privateFields.set(this, {
       parameters
@@ -124,6 +125,6 @@ export default class Route {
   }
 }
 
-Route.prototype.consumes = null;
-Route.prototype.produces = null;
-Route.prototype.description = null;
+// Route.prototype.consumes = null;
+// Route.prototype.produces = null;
+// Route.prototype.description = null;

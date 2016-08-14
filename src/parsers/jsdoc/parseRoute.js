@@ -2,6 +2,50 @@ import type { ParameterKind } from '../../lib/Route';
 import Route from '../../lib/Route';
 import { parseTypeString } from './type/parseType';
 import BaseType from '../../lib/types/abstract/BaseType';
+import ObjectType from '../../lib/types/ObjectType';
+
+const TAG_HANDLERS = {
+  consumes(val: string, route: Route) {
+    route.consumes = val;
+  },
+
+  produces(val: string, route: Route) {
+    route.produces = val;
+  },
+
+  responds(val: string, route: Route) {
+    const type = parseTypeString(val);
+
+    const httpCode = Number(type.name);
+    if (Number.isNaN(httpCode)) {
+      throw new Error(`Invalid HTTP code in @responds ${val}. Format is @responds <type> <code> - <description>`);
+    }
+
+    route.addResponse(httpCode, type);
+  },
+
+  body(val: string, route: Route) {
+    if (route.body !== null) {
+      throw new Error(`Route ${route.method} ${route.path} has a duplicate body description.`);
+    }
+
+    route.body = parseTypeString(val);
+  },
+
+  bodyparam(val: string, route: Route) {
+    if (route.body === null) {
+      route.body = new ObjectType();
+    }
+
+    const body: ObjectType = route.body;
+    if (!(body instanceof ObjectType)) {
+      throw new Error(`Trying to add a body parameter to ${route.method} ${route.path}, but body is not an object.`);
+    }
+
+    const type = parseTypeString(val);
+    body.addMember(type);
+  }
+};
 
 /**
  * Extracts a route from a parsed JSDoc comment.
@@ -24,43 +68,22 @@ export default function (doc: JsDocFunction): ?Route {
       continue;
     }
 
+    if (TAG_HANDLERS[tag]) {
+      TAG_HANDLERS[tag](value, route);
+      continue;
+    }
+
     if (tag.endsWith('param')) {
       const parameterKindName: string = tag.substr(0, tag.length - 'param'.length);
       const parameterKind: ?ParameterKind = Route.PARAMETER_KINDS[parameterKindName.toLocaleUpperCase()];
 
       if (parameterKind === void 0) {
-        throw new Error(`Unknown parameter tag @${tag}`);
+        continue;
       }
 
       const type: BaseType = parseTypeString(value);
       route.addParameter(parameterKind, type);
-      continue;
     }
-
-    if (tag === 'consumes') {
-      route.consumes = value;
-      continue;
-    }
-
-    if (tag === 'produces') {
-      route.produces = value;
-      continue;
-    }
-
-    if (tag === 'responds') {
-      const type = parseTypeString(value);
-
-      const httpCode = Number(type.name);
-      if (Number.isNaN(httpCode)) {
-        throw new Error(`Invalid HTTP code in @responds ${value}. Format is @responds <type> <code> - <description>`);
-      }
-
-      route.addResponse(httpCode, type);
-      continue;
-    }
-
-    // TODO authenticate
-    console.log('UNKNOWN TAG', tag);
   }
 
   return route;

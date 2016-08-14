@@ -58,7 +58,7 @@ export default () => {
     });
   });
 
-  describe('Parameters', () => {
+  describe('parameters', () => {
     let parameterList: Map<string, BaseType>;
 
     before(async() => {
@@ -124,7 +124,7 @@ export default () => {
       expect(generic.nativeType).to.equal('string');
     });
 
-    it('throws if the a param is described twice', () => {
+    it('throws if a param is described twice', () => {
       return getRes('param/Test_5')
         .then(doc => doc[0].validate())
         .should.be.rejectedWith(Error);
@@ -142,9 +142,9 @@ export default () => {
           .should.be.rejectedWith(Error);
       });
 
-      it('defines path parameters', async () => {
-        const doc : Route[] = await getRes('param/Test_3');
-        const param : PrimitiveType = doc[0].pathParameters.get('param');
+      it('defines path parameters', async() => {
+        const doc: Route[] = await getRes('param/Test_3');
+        const param: PrimitiveType = doc[0].pathParameters.get('param');
 
         expect(param).to.be.instanceOf(PrimitiveType);
         expect(param.name).to.equal('param');
@@ -155,6 +155,42 @@ export default () => {
         return getRes('param/Test_4')
           .then(doc => doc[0].validate())
           .should.be.rejectedWith(Error);
+      });
+    });
+  });
+
+  describe('body', () => {
+    let routes: Route[];
+
+    before(async() => {
+      routes = await getRes('body/Test_0');
+    });
+
+    describe('@body', () => {
+      it('defines the type of the body', () => {
+        const body: ObjectType = routes[0].body;
+
+        expect(body).to.be.instanceOf(ObjectType);
+
+        const param: PrimitiveType = body.members.get('color');
+        expect(param).to.not.be.undefined();
+        expect(param).to.be.instanceOf(PrimitiveType);
+        expect(param.name).to.equal('color');
+        expect(param.nativeType).to.equal('number');
+      });
+    });
+
+    describe('@bodyParam', () => {
+      it('makes the body an object and defines one of its properties', () => {
+        const body: ObjectType = routes[1].body;
+
+        expect(body).to.be.instanceOf(ObjectType);
+
+        const param: PrimitiveType = body.members.get('color');
+        expect(param).to.not.be.undefined();
+        expect(param).to.be.instanceOf(PrimitiveType);
+        expect(param.name).to.equal('color');
+        expect(param.nativeType).to.equal('number');
       });
     });
   });

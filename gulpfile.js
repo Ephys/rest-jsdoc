@@ -23,16 +23,3 @@ gulp.task('transpile-babel', function () {
     .pipe(babel())
     .pipe(gulp.dest(paths.es5));
 });
-
-gulp.task('watch', ['transpile'], function () {
-  nodemon({
-    script: 'es5/test.js',
-    watch: [paths.es6],
-    ext: 'js',
-    tasks: ['transpile']
-  }).on('restart', function () {
-    console.log('restarted!');
-  });
-});
-
-gulp.task('default', ['watch']);

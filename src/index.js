@@ -4,6 +4,7 @@ import jsdocParser from './parsers/jsdoc';
 import Route from './lib/Route';
 import BaseType from './lib/types/abstract/BaseType';
 import type { ParseResult, FormatterParameter } from './flowtypes';
+import TypedefMap from './lib/TypedefMap';
 
 export default function ({ files = [], formatter = openapiFormatter(), parser = jsdocParser } : {
   files: string[];
@@ -11,7 +12,7 @@ export default function ({ files = [], formatter = openapiFormatter(), parser = 
   parser: (fileName: string) => ParseResult;
 } = {}) : any {
 
-  const typedefs: Map<string, BaseType> = new Map();
+  const typedefs: Map<string, BaseType> = new TypedefMap();
   const routes: Route[] = [];
 
   return Promise.all(files.map(router => parser(router)))
@@ -26,13 +27,7 @@ export default function ({ files = [], formatter = openapiFormatter(), parser = 
         }
 
         if (format instanceof BaseType) {
-          const name = format.name;
-
-          if (typedefs.has(name)) {
-            throw new Error(`Duplicate type definition for ${name}.`);
-          }
-
-          typedefs.set(name, format);
+          typedefs.set(format.name, format);
         }
 
         throw new Error(`Unknown class received ${getName(format)}`);
