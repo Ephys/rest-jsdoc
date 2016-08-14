@@ -44,9 +44,6 @@ extractRouteDoc({
 // export default {
 
   // /**
-  //  * Returns the list of challenges that the patient still needs to do for today.
-  //  *
-  //  * @GET /users/:patient/daily_challenges
   //  * @pathParam {!number} patient - The ID of the patient.
   //  * @queryParam {!Date} [date] - The date for which the challenges will be retrieved.
   //  * @responds 200 {{ data: !Array.<ApiDailyChallenge> }}
@@ -55,18 +52,11 @@ extractRouteDoc({
   // getDailyChallenges() {},
   //
   // /**
-  //  * Updates the details on a challenge.
-  //  *
-  //  * @PATCH /users/:patient/daily_challenges/:challenge
   //  * @override PUT /users/:patient/daily_challenges/:challenge
   //  */
   // updateChallengeStatus() {},
   //
   // /**
-  //  * Marks a daily challenge as completed (or skipped / partly completed).
-  //  * Creates or update the daily log of the challenge.
-  //  *
-  //  * @PUT /challenges/:challenge
   //  * @pathParam {!number} challengeId - The ID of the challenge to complete.
   //  * @queryParam {!Date} [date] - The date for which the challenges will be retrieved.
   //  * @bodyParam {!ApiChallengeStatus} status - The status for the challenge.
@@ -78,9 +68,6 @@ extractRouteDoc({
   // setChallengeStatus() {},
   //
   // /**
-  //  * Creates a new exercise plan.
-  //  *
-  //  * @POST /exercise_plan
   //  * @bodyParam {!(string|number)} [to] - The user to whom this plan is destined. The user needs to be either the author
   //  *                                      or a patient of the author.
   //  *                                      If a string is provided,
@@ -93,8 +80,6 @@ extractRouteDoc({
   //  * @bodyParam {!Array.<ApiChallenge>} challenges - The list of challenges of the plan.
   //  * @responds {{ data: !ApiExercisePlan }} 201 - The plan.
   //  * @responds {!ApiError} 404 - ERR_USER_NOT_FOUND: Invalid patient ID.
-  //  * @consumes application/json
-  //  * @produces application/json
   //  * @authenticated
   //  */
   // createExercisePlan() {}
@@ -103,8 +88,6 @@ extractRouteDoc({
 export default {
 
   /**
-   * Creates a new account.
-   * @GET /thing
    * @bodyParam {(string|boolean)} username - The name of the user.
    */
   createUser() {

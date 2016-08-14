@@ -1,28 +1,24 @@
 /**
- * @typedef {!Object} Test0obj
- */
-
-/**
- * @GET /user/test
+ * @GET /user/test1
  */
 export function getTest() {}
 
 /**
- * @PUT /user/test
+ * @PUT /user/test2
  */
 export function putTest() {}
 
 /**
- * @PATCH /user/test
+ * @PATCH /user/test3
  */
 export function patchTest() {}
 
 /**
- * @POST /user/test
+ * @POST /user/test4
  */
 export function postTest() {}
 
 /**
- * @DELETE /user/test
+ * @DELETE /user/test5
  */
 export function deleteTest() {}

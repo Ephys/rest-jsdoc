@@ -7,11 +7,13 @@
 - deprecated support.
 
 - Allow formater-specific tags.
+- Support for more complex native types (integer, ...)
+- Support for native obejcts (Date, ...)
 
 # formatting:
 
 - Support for basepath, host, schemes.
-- Support for default consumes.
+- Support for default consumes/produces.
 - Support for tags.
 
 # Swagger formatter:

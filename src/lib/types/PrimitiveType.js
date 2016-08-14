@@ -8,7 +8,7 @@ import EcmaScriptType from './abstract/EcmaScriptType';
  */
 export default class PrimitiveType extends EcmaScriptType {
 
-  static TYPES: string[];
+  static TYPES: string[] = ['number', 'string', 'boolean'];
 
   constructor(typeName) {
     super(typeName);
@@ -18,5 +18,3 @@ export default class PrimitiveType extends EcmaScriptType {
     }
   }
 }
-
-PrimitiveType.TYPES = ['number', 'string', 'boolean'];

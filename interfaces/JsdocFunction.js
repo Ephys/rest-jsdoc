@@ -1,7 +1,7 @@
 
 /** Type definition of the JSDocParser output for functions. */
 declare class JsDocFunction {
-  description: string;
+  description: ?string;
   customTags: JsDocTag[];
 }
 

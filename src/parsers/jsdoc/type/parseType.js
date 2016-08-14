@@ -31,7 +31,7 @@ export function extractType(typeRaw: JsDocTypedef | JsDocTypeInstance): BaseType
 
   const parsedType = typeRaw.parsedType ? typeRaw.parsedType : typeRaw;
 
-  type.description = typeRaw.text || typeRaw.description;
+  type.description = typeRaw.text || typeRaw.description || null;
   type.name = typeRaw.name;
   type.nullable = extractFromMultiple('nullable', true, typeRaw, parsedType);
   type.optional = extractFromMultiple('optional', false, typeRaw, parsedType);

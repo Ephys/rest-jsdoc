@@ -1,0 +1,4 @@
+/**
+ * @GET
+*/
+export function getTest() {}

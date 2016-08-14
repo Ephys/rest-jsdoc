@@ -9,11 +9,14 @@ import BaseType from './BaseType';
  */
 export default class EcmaScriptType extends BaseType {
 
-  typeName: string;
+  /**
+   * The native type of the variable (undefined, null, number, string, boolean, symbol, or object).
+   */
+  nativeType: string;
 
   constructor(typeName) {
     super();
 
-    this.typeName = typeName;
+    this.nativeType = typeName;
   }
 }

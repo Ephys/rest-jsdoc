@@ -16,7 +16,7 @@ export default function (doc: JsDocFunction): ?Route {
     return null;
   }
 
-  route.description = doc.description;
+  route.description = doc.description || null;
   for (const tagMeta of doc.customTags) {
     const { tag, value } = tagMeta;
 
@@ -78,9 +78,17 @@ function getRoute(doc: Object): ?Route {
   }
 
   for (const tag of doc.customTags) {
-    if (Route.METHODS.includes(tag.tag)) {
-      return new Route(tag.tag, tag.value);
+    const method = tag.tag;
+    if (!Route.METHODS.includes(method)) {
+      continue;
     }
+
+    const path = tag.value;
+    if (!path) {
+      throw new Error(`Tag "@${method.toUpperCase()}" is missing its path.`);
+    }
+
+    return new Route(method, path);
   }
 
   return null;
