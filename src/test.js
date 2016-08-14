@@ -44,8 +44,6 @@ extractRouteDoc({
 // export default {
 
   // /**
-  //  * @pathParam {!number} patient - The ID of the patient.
-  //  * @queryParam {!Date} [date] - The date for which the challenges will be retrieved.
   //  * @responds 200 {{ data: !Array.<ApiDailyChallenge> }}
   //  * @responds 404 {!ApiError}
   //  */
@@ -57,9 +55,6 @@ extractRouteDoc({
   // updateChallengeStatus() {},
   //
   // /**
-  //  * @pathParam {!number} challengeId - The ID of the challenge to complete.
-  //  * @queryParam {!Date} [date] - The date for which the challenges will be retrieved.
-  //  * @bodyParam {!ApiChallengeStatus} status - The status for the challenge.
   //  * @responds 200 {{ data: !ApiChallengeStatus }} The stored log information for the challenge.
   //  * @responds 404 {!ApiError} - ERR_CHALLENGE_NOT_FOUND: Invalid challenge ID.
   //  * @responds 403 {!ApiError} - ERR_ACCESS_DENIED: This challenge is not in the plan of the user.

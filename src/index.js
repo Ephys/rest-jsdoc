@@ -20,6 +20,7 @@ export default function ({ files = [], formatter = openapiFormatter(), parser = 
 
       for (const format of formats) {
         if (format instanceof Route) {
+          format.validate();
           routes.push(format);
           continue;
         }

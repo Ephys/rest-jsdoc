@@ -22,8 +22,14 @@ const privateFields = new WeakMap();
  */
 export default class Route {
 
-  static PARAMETER_KINDS: { [key: string]: number };
-  static METHODS: string[];
+  static PARAMETER_KINDS: { [key: string]: number } = {
+    PATH: 0,
+    QUERY: 1,
+    HEADER: 2,
+    BODY: 3
+  };
+
+  static METHODS: string[] = ['get', 'put', 'post', 'delete', 'options', 'head', 'patch'];
 
   method: string;
   path: string;
@@ -63,15 +69,14 @@ export default class Route {
    * @param {!BaseType} type - The type of the parameter.
    * @returns {!Route} this.
    */
-  addParameter(kind: ParameterKind,
-               type: BaseType): Route {
+  addParameter(kind: ParameterKind, type: BaseType): Route {
 
     const parameterName = type.name;
 
     if (kind === Route.PARAMETER_KINDS.PATH) {
       const paramRegex = new RegExp(`:${parameterName}($|\/)`);
       if (!paramRegex.test(this.path)) {
-        throw new Error(`Route ${this.method} ${this.path} does not have a path parameter ${parameterName} but 
+        throw new Error(`Route ${this.method} ${this.path} does not have a path parameter "${parameterName}" but 
                          does have a description for it.`);
       }
     }
@@ -79,7 +84,7 @@ export default class Route {
     const properties = privateFields.get(this);
     const parameterMap = properties.parameters[kind];
     if (parameterMap.has(parameterName)) {
-      throw new Error(`Route ${this.method} ${this.path} has a duplicate parameter name ${parameterName}.`);
+      throw new Error(`Route ${this.method} ${this.path} has a duplicate parameter name "${parameterName}".`);
     }
 
     parameterMap.set(parameterName, type);
@@ -93,17 +98,32 @@ export default class Route {
     this.responses.push({ httpCode, type });
     return this;
   }
+
+  validate() {
+    const matches = this.path.match(/:[a-zA-Z0-9]+/g);
+    if (matches === null) { // why is this not returning an empty array ?
+      return true;
+    }
+
+    matches.sort();
+
+    for (let i = 0; i < matches.length; i++) {
+      const match = matches[i];
+      const paramName = match.substr(1);
+
+      if (match === matches[i - 1]) {
+        throw new Error(`Route ${this.method} ${this.path} has a duplicate path parameter"${paramName}"`);
+      }
+
+      if (!this.pathParameters.has(paramName)) {
+        throw new Error(`Route ${this.method} ${this.path} is missing a path parameter description for "${paramName}"`);
+      }
+    }
+
+    return true;
+  }
 }
 
 Route.prototype.consumes = null;
 Route.prototype.produces = null;
 Route.prototype.description = null;
-
-Route.PARAMETER_KINDS = {
-  PATH: 0,
-  QUERY: 1,
-  HEADER: 2,
-  BODY: 3
-};
-
-Route.METHODS = ['get', 'put', 'post', 'delete', 'options', 'head', 'patch'];

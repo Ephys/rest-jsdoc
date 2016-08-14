@@ -12,8 +12,8 @@ import CustomType from '../../src/lib/types/CustomType';
 export default () => {
 
   describe('@<method>', () => {
-    it('supports most HTTP methods #0', async() => {
-      const doc = await jsdoc(getRes('method/Test_0'));
+    it('supports most HTTP methods', async() => {
+      const doc = await getRes('method/Test_0');
 
       expect(doc[0].method).to.equal('get');
       expect(doc[0].path).to.equal('/user/test1');
@@ -31,12 +31,12 @@ export default () => {
       expect(doc[4].path).to.equal('/user/test5');
     });
 
-    it('not providing a path should throw #1', () => {
-      return jsdoc(getRes('method/Test_1')).should.be.rejectedWith(Error, 'Error: Tag "@GET" is missing its path.');
+    it('not providing a path should throw', () => {
+      return getRes('method/Test_1').should.be.rejectedWith(Error, 'Error: Tag "@GET" is missing its path.');
     });
 
     it('documentation comment is method description', async() => {
-      const doc = await jsdoc(getRes('method/Test_2'));
+      const doc = await getRes('method/Test_2');
 
       expect(doc[0].description).to.equal('Hello dear');
       expect(doc[1].description).to.equal(null);
@@ -45,7 +45,7 @@ export default () => {
 
   describe('@consumes/@produces', async() => {
     it('defines the input/output format of the route', async() => {
-      const doc = await jsdoc(getRes('consumes_produces/Test_0'));
+      const doc = await getRes('consumes_produces/Test_0');
 
       expect(doc[0].consumes).to.equal('application/json');
       expect(doc[0].produces).to.equal(null);
@@ -62,7 +62,7 @@ export default () => {
     let parameterList: Map<string, BaseType>;
 
     before(async() => {
-      const doc: Route[] = await jsdoc(getRes('param/Test_0'));
+      const doc: Route[] = await getRes('param/Test_0');
       parameterList = doc[0].queryParameters;
     });
 
@@ -123,11 +123,45 @@ export default () => {
       expect(generic).to.be.instanceOf(PrimitiveType);
       expect(generic.nativeType).to.equal('string');
     });
+
+    it('throws if the a param is described twice', () => {
+      return getRes('param/Test_5')
+        .then(doc => doc[0].validate())
+        .should.be.rejectedWith(Error);
+    });
+
+    describe('@pathParam', () => {
+      it('throws if the described parameter is not in the path', () => {
+        return getRes('param/Test_1')
+          .should.be.rejectedWith(Error);
+      });
+
+      it('throws if there is a missing parameter description', () => {
+        return getRes('param/Test_2')
+          .then(doc => doc[0].validate())
+          .should.be.rejectedWith(Error);
+      });
+
+      it('defines path parameters', async () => {
+        const doc : Route[] = await getRes('param/Test_3');
+        const param : PrimitiveType = doc[0].pathParameters.get('param');
+
+        expect(param).to.be.instanceOf(PrimitiveType);
+        expect(param.name).to.equal('param');
+        expect(param.nativeType).to.equal('string');
+      });
+
+      it('throws if there is a duplicate parameter declaration', () => {
+        return getRes('param/Test_4')
+          .then(doc => doc[0].validate())
+          .should.be.rejectedWith(Error);
+      });
+    });
   });
 
   // TODO typedef.
 };
 
 function getRes(filename: string): string {
-  return `${__dirname}/resources/${filename}.js`;
+  return jsdoc(`${__dirname}/resources/${filename}.js`);
 }
