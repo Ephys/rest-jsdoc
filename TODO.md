@@ -9,6 +9,8 @@
 - Allow formater-specific tags.
 - Support for more complex native types (integer, ...)
 - Support for native obejcts (Date, ...)
+- Override support
+- Cyclic typedefs -> Throw
 
 # formatting:
 

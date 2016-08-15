@@ -39,6 +39,10 @@ export function buildInstanceForTypedef(typedef: JsDocTypedef): BaseType {
 
   const instances: BaseType[] = [];
 
+  if (typedef.properties) {
+    typedef.properties = sanitizeProperties(typedef.properties);
+  }
+
   for (const name of typedef.type.names) {
     if (name === '*') {
       // Special case 1
@@ -47,7 +51,7 @@ export function buildInstanceForTypedef(typedef: JsDocTypedef): BaseType {
       return new AnyType();
     }
 
-    if (name === 'Object') {
+    if (name.toLocaleLowerCase() === 'object') {
       // special case 2
       // for objects as their properties are stored in parsedType.properties
       // and would be lost when sent through catharsis.
@@ -73,20 +77,77 @@ export function buildInstanceForTypedef(typedef: JsDocTypedef): BaseType {
 /**
  * Builds an ObjectType from parsed JSDoc @typedef-like type declarations.
  *
- * @param {!Object} parsedType - The declaration, parsed by JSDoc's parser.
+ * @param {!Object} typedef - The declaration, parsed by JSDoc's parser.
  * @returns {!BaseType} The object type.
  */
-function buildObjectType(parsedType: JsDocTypedef): BaseType {
+function buildObjectType(typedef: JsDocTypedef): BaseType {
   const instance = new ObjectType();
 
-  if (!parsedType.properties) {
+  if (!typedef.properties) {
     return instance;
   }
 
-  for (const property of parsedType.properties) {
+  for (const property of typedef.properties) {
     const member = extractType(property);
     instance.addMember(member);
   }
 
   return instance;
+}
+
+/**
+ * For the following example,
+ * \@property {!Object} opt
+ * \@property {!string} opt.optProp
+ * The JSDoc parser marks optProp not as being a property of opt
+ * but as being the property opt.optProp of the typedef.
+ *
+ * This function fixes that.
+ *
+ * @param {!Array.<JsDocTypedef>} properties - The properties.
+ * @returns {!Array.<JsDocTypedef>} The sanitized properties.
+ */
+function sanitizeProperties(properties: JsDocTypedef[]): JsDocTypedef[] {
+  const topLevelProperties: JsDocTypedef[] = [];
+  const objects: Map<string, JsDocTypedef> = new Map();
+
+  // Create object map.
+  for (const property: JsDocTypedef of properties) {
+    if (!property.type.names.includes('object')) {
+      continue;
+    }
+
+    if (objects.has(property.name)) {
+      throw new Error(`Duplicate typedef member "${property.name}"`);
+    }
+
+    objects.set(property.name, property);
+  }
+
+  for (const property of properties) {
+    const lastSeparator = property.name.lastIndexOf('.');
+
+    // not a subproperty
+    if (lastSeparator === -1) {
+      topLevelProperties.push(property);
+      continue;
+    }
+
+    const propertyName = property.name.substr(lastSeparator + 1);
+    const parentPropertyName = property.name.substr(0, lastSeparator);
+
+    if (!parentPropertyName || !propertyName) {
+      throw new Error(`Invalid typedef property name "${property.name}"`);
+    }
+
+    const parent = objects.get(parentPropertyName);
+    if (parent.properties === void 0) {
+      parent.properties = [];
+    }
+
+    parent.properties.push(property);
+    property.name = propertyName;
+  }
+
+  return topLevelProperties;
 }

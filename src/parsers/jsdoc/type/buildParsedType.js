@@ -49,6 +49,11 @@ export default function buildParsedType(parsedType: JsDocParsedType): BaseType {
 function buildNamedType(namedExpression: JsDocNameExpression): BaseType {
   const name = namedExpression.name;
 
+  // Oh look, another JSDoc special case!
+  if (name.toLocaleLowerCase() === 'object') {
+    return new ObjectType();
+  }
+
   if (PrimitiveType.TYPES.includes(name)) {
     return new PrimitiveType(name);
   }

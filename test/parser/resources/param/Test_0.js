@@ -11,6 +11,7 @@
  * @queryParam {number} PrimitiveParam
  * @queryParam {number|boolean} UnionParam
  * @queryParam {{ test: number }} RecordParam
+ * @queryParam {Object} ObjectParam
  * @queryParam {Array.<string>} GenericParam
  */
 export function test1() {}

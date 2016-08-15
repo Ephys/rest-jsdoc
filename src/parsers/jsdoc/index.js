@@ -1,7 +1,7 @@
 import parse from 'jsdoc-parse';
 import streamToPromise from 'stream-to-promise';
 import parseRoute from './parseRoute';
-import parseTypedef from './type/parseTypedef';
+import parseTypedef from './type/buildTypedef';
 import type { ParseResult } from '../../flowtypes';
 import BaseType from '../../lib/types/abstract/BaseType';
 import Route from '../../lib/Route';
