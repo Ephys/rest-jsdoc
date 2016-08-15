@@ -22,9 +22,10 @@
   "dependencies": {
     "jsdoc-75lb": "^3.5.6",
     "jsdoc-parse": "^1.2.7",
-    "stream-to-promise": "^2.2.0",
+    "lodash": "latest",
+    "lodash.merge": "^4.6.0",
     "requizzle": "latest",
-    "lodash": "latest"
+    "stream-to-promise": "^2.2.0"
   },
   "devDependencies": {
     "babel": "^6.5.2",
@@ -32,12 +33,12 @@
     "babel-plugin-syntax-async-functions": "^6.8.0",
     "babel-plugin-transform-async-to-generator": "^6.8.0",
     "babel-plugin-transform-class-properties": "^6.11.5",
+    "babel-plugin-transform-es2015-modules-commonjs": "^6.11.5",
     "babel-plugin-transform-flow-strip-types": "^6.8.0",
     "babel-plugin-transform-object-rest-spread": "^6.8.0",
     "babel-plugin-transform-regenerator": "^6.11.4",
     "babel-plugin-transform-undefined-to-void": "^6.8.0",
     "babel-polyfill": "^6.13.0",
-    "babel-preset-es2015": "^6.9.0",
     "chai": "^3.5.0",
     "chai-as-promised": "^5.3.0",
     "dirty-chai": "^1.2.2",

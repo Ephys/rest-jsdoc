@@ -4,13 +4,17 @@ import { parseTypeString } from './type/parseType';
 import BaseType from '../../lib/types/abstract/BaseType';
 import ObjectType from '../../lib/types/ObjectType';
 
+function tokenize(str) {
+  return str.replace(/\s+/g, ' ').trim().split(' ');
+}
+
 const TAG_HANDLERS = {
   consumes(val: string, route: Route) {
-    route.consumes = val;
+    route.consumes = tokenize(val);
   },
 
   produces(val: string, route: Route) {
-    route.produces = val;
+    route.produces = tokenize(val);
   },
 
   responds(val: string, route: Route) {
@@ -60,7 +64,9 @@ export default function (doc: JsDocFunction): ?Route {
     return null;
   }
 
+  route.deprecated = doc.deprecated === true;
   route.description = doc.description || null;
+
   for (const tagMeta of doc.customTags) {
     const { tag, value } = tagMeta;
 

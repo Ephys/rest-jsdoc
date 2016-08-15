@@ -3,6 +3,7 @@
 declare class JsDocFunction {
   description: ?string;
   customTags: JsDocTag[];
+  deprecated: ?boolean;
 }
 
 declare type JsDocTag = {

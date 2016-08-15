@@ -14,9 +14,9 @@ export default class EcmaScriptType extends BaseType {
    */
   nativeType: string;
 
-  constructor(typeName) {
+  constructor(typeName: string) {
     super();
 
-    this.nativeType = typeName;
+    this.nativeType = typeName.toLocaleLowerCase();
   }
 }

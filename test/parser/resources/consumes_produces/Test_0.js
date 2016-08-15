@@ -14,3 +14,9 @@ export function test2() {}
  * @GET /none
  */
 export function test3() {}
+
+/**
+ * @GET /multiple
+ * @consumes application/x-www-form-urlencoded    multipart/form-data
+ */
+export function test4() {}

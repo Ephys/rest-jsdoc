@@ -34,9 +34,13 @@ export default class Route {
   method: string;
   path: string;
 
-  consumes: ?string = null;
-  produces: ?string = null;
+  deprecated: boolean = false;
+  consumes: ?(string[]) = null;
+  produces: ?(string[]) = null;
   description: ?string = null;
+
+  /** List of formatter-specific fields. These are tags not recognized by */
+  customFields: Map<string, string> = new Map();
 
   pathParameters: Map<string, BaseType>;
   queryParameters: Map<string, BaseType>;
@@ -124,7 +128,3 @@ export default class Route {
     return true;
   }
 }
-
-// Route.prototype.consumes = null;
-// Route.prototype.produces = null;
-// Route.prototype.description = null;

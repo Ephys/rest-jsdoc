@@ -6,21 +6,19 @@
 - Enable custom tag handling (like @authenticate).
 - deprecated support.
 
-- Allow formater-specific tags.
 - Support for more complex native types (integer, ...)
 - Support for native obejcts (Date, ...)
 - Override support
 - Cyclic typedefs -> Throw
+- HTTP method extend
+- Typedef extend
 
 # formatting:
 
 - Support for basepath, host, schemes.
-- Support for default consumes/produces.
-- Support for tags.
 
 # Swagger formatter:
 
-- Support for Route.description (along with Route.summary).
 - Support for Route.operationId
 - Support for Route.Responses.Default
 - SUpport for Route.Response.x.headers|exemples

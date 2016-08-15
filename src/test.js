@@ -1,31 +1,24 @@
+import convert from './index';
 
-// /**
-//  * @typedef {!Object} [ApiExercisePlan]
-//  * @property {!Array.<ApiChallenge>} challenges - The list of challenges in the plan.
-//  * @property {!number} [subject]
-//  */
+convert({
+  files: [`${__dirname}/test.js`]
+})
+  .then(x => console.log(JSON.stringify(x, null, 2)))
+  .catch(x => console.error(x));
 
-// /**
-//  * @typedef {!Object} ApiDailyChallenge
-//  * @property {!ApiChallengeStatus} status - The status of the challenge for the current day.
-//  * @property {!ApiChallenge} challenge - The challenge.
-//  */
-//
-// /**
-//  * @typedef {!Object} ApiChallenge
-//  * // TODO
-//  */
-//
-// /**
-//  * @typedef {!Object} ApiChallengeStatus
-//  * // TODO
-//  */
+export default {
 
-// export default {
-
-  // /**
-  //  * @override PUT /users/:patient/daily_challenges/:challenge
-  //  */
-  // updateChallengeStatus() {},
-// };
-
+  /**
+   * Updates some guy's password
+   *
+   * @deprecated
+   *
+   * @PUT /user/:user/password
+   * @body {!string} password - The new password.
+   * @pathParam {!number} user - The user ID.
+   * @queryParam {!Array.<string>} [someParam] - An array of strings.
+   *
+   * @responds {!string} 200 - The new password hash.
+   */
+  updateChallengeStatus() {}
+};

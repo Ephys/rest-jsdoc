@@ -1,3 +1,6 @@
 {
-  "main": "./index.js"
+  "main": "./index.js",
+  "dependencies": {
+    "lodash.merge": "latest"
+  }
 }

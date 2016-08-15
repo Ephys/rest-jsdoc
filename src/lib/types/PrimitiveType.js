@@ -8,7 +8,8 @@ import EcmaScriptType from './abstract/EcmaScriptType';
  */
 export default class PrimitiveType extends EcmaScriptType {
 
-  static TYPES: string[] = ['number', 'string', 'boolean'];
+  // TODO What about undefined ?
+  static TYPES: string[] = ['number', 'string', 'boolean', 'null'];
 
   constructor(typeName) {
     super(typeName);
